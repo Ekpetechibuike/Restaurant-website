@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nigeria Flavors — Cultural Restaurant</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+
+<a class="logo" href="#">Nigeria Flavors</a>
+<span id="profileNavInfo" class="profile-nav-info hidden" style="margin-left:auto; display:flex; align-items:center; gap:0.5rem;">
+  <img id="profileAvatarNav" src="assets/images/default-avatar.jpg" alt="Profile" class="profile-avatar-nav-nav">
+  <span id="profileUsername"></span>
+</span>
+<button id="navToggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false" style="margin-left:0.5rem;">☰</button>
+      <nav id="nav" class="nav" data-open="false">
+        <a href="#menu">Menu</a>
+
+        <a href="#culture">Culture</a>
+        <a href="#contact">Contact</a>
+        <a href="profile.html" id="profileNavLink" class="hidden">My Profile</a>
+        <button id="logoutNavBtn" class="nav-logout hidden" onclick="logout()">Logout</button>
+      </nav>
+    </div>
+</header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Authentic Nigerian Dishes</h1>
+        <p>Explore the flavors and cultural foods of the three major tribes: Hausa, Igbo, and Yoruba.</p>
+        <a class="btn" href="#menu">See Menu</a>
+      </div>
+    </section>
+
+    <section id="menu" class="container menu-section">
+      <h2>Our Menu</h2>
+      <p class="lead">Filter by region:</p>
+      <div class="filters">
+        <button class="filter active" data-group="all">All</button>
+        <button class="filter" data-group="hausa">Hausa (North)</button>
+        <button class="filter" data-group="igbo">Igbo (East)</button>
+        <button class="filter" data-group="yoruba">Yoruba (West)</button>
+      </div>
+
+      <div class="cards" id="cards">
+        <!-- Hausa -->
+        <article class="card" data-group="hausa">
+          <img src="assets/images/download.jpeg" alt="Tuwo Shinkafa">
+          <div class="card-body">
+            <h3>Tuwo Shinkafa</h3>
+            <p class="dish-desc">Soft, smooth rice dumplings served with savory soups such as Miyan Kuka (baobab leaf) or Miyan Taushe (pumpkin soup). A Hausa staple.</p>
+<p class="price" data-dish="Tuwo Shinkafa" onclick="openOrderModal('Tuwo Shinkafa', 2500)">₦2,500</p>
+          </div>
+        </article>
+
+
+        <article class="card" data-group="hausa">
+          <img src="assets/images/download01.jpeg" alt="Suya">
+          <div class="card-body">
+            <h3>Suya</h3>
+            <p class="dish-desc">Spiced grilled skewered meat with aromatic peanut rub. A street-food favorite with deep Hausa roots across Northern Nigeria.</p>
+<p class="price" data-dish="Suya" onclick="openOrderModal('Suya', 3000)">₦3,000</p>
+          </div>
+        </article>
+
+
+        <!-- Igbo -->
+        <article class="card" data-group="igbo">
+          <img src="assets/images/download03.jpeg" alt="Ofe Nsala">
+          <div class="card-body">
+            <h3>Ofe Nsala (White Soup)</h3>
+            <p class="dish-desc">A light, creamy soup made with palm oil, catfish or chicken, thickened with yam. Delicate and aromatic, Igbo favorite.</p>
+            <p class="price" data-dish="Ofe Nsala (White Soup)" onclick="openOrderModal('Ofe Nsala (White Soup)', 2800)">₦2,800</p>
+          </div>
+        </article>
+
+
+        <article class="card" data-group="igbo">
+          <img src="assets/images/download04.jpeg" alt="Abacha">
+          <div class="card-body">
+            <h3>Abacha & Ugba</h3>
+            <p class="dish-desc">Popular Igbo salad made from shredded cassava and fermented locust beans, served with palm oil, peppers, and onions.</p>
+            <p class="price" data-dish="Abacha & Ugba" onclick="openOrderModal('Abacha & Ugba', 2200)">₦2,200</p>
+          </div>
+        </article>
+
+
+        <!-- Yoruba -->
+        <article class="card" data-group="yoruba">
+          <img src="assets/images/Efo-Riro-1.jpeg" alt="Efo Riro">
+          <div class="card-body">
+            <h3>Efo Riro</h3>
+            <p class="dish-desc">A rich, aromatic spinach-based stew with peppers, smoked fish, assorted meats, and bold spices. Yoruba classic.</p>
+            <p class="price" data-dish="Efo Riro" onclick="openOrderModal('Efo Riro', 2600)">₦2,600</p>
+          </div>
+        </article>
+
+
+        <article class="card" data-group="yoruba">
+          <img src="assets/images/Amala_and_Gbegiri_with_Ewedu_soup.jpg" alt="Amala and Gbegiri">
+          <div class="card-body">
+            <h3>Amala with Gbegiri & Ewedu</h3>
+            <p class="dish-desc">Smooth yam or cassava flour swallow served with bean soup (Gbegiri) and slimy okra leaf soup (Ewedu). Yoruba trio.</p>
+            <p class="price" data-dish="Amala with Gbegiri & Ewedu" onclick="openOrderModal('Amala with Gbegiri & Ewedu', 2900)">₦2,900</p>
+          </div>
+        </article>
+
+
+      </div>
+    </section>
+
+    <section id="culture" class="container culture">
+
+
+      <h2>Culture & Notes</h2>
+      <div class="tribes">
+        <div class="tribe">
+          <h3>Hausa (North)</h3>
+          <p>Hausa cuisine emphasizes grains like millet and rice, savory soups such as Miyan Kuka, grilled meats (Suya), and hearty stews served with "swallows" such as tuwo.</p>
+        </div>
+        <div class="tribe">
+          <h3>Igbo (East)</h3>
+          <p>Igbo foods feature soups like Ofe Nsala and Oha, fermented ingredients, and dishes like Abacha and Nkwobi — often spicy, smoky, and rich in palm oil flavors.</p>
+        </div>
+        <div class="tribe">
+          <h3>Yoruba (West)</h3>
+          <p>Yoruba cuisine includes Amala, Ewedu, Gbegiri, and Efo Riro — leafy stews and flavors built on palm oil, peppers, and local vegetables.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="container contact">
+      <h2>Contact & Reservations</h2>
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <h3>Get in Touch</h3>
+          <p><strong>Email:</strong> <a href="mailto:hello@nigeriaflavors.example">hello@nigeriaflavors.example</a></p>
+          <p><strong>Phone:</strong> +234‑800‑000‑0000</p>
+          <p><strong>Hours:</strong> Mon–Fri 11am–10pm | Sat–Sun 10am–11pm</p>
+          <p><strong>Address:</strong> 123 Flavor Street, Lagos, Nigeria</p>
+        </div>
+        <form class="reservation-form" id="reservationForm">
+          <h3>Book a Table</h3>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" name="date" required />
+            </div>
+            <div class="form-group">
+              <label for="time">Time</label>
+              <input type="time" id="time" name="time" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="guests">Number of Guests</label>
+            <input type="number" id="guests" name="guests" min="1" max="10000" required />
+          </div>
+          
+          <!-- Food Selection for Reservation -->
+          <fieldset class="form-group">
+            <legend style="font-weight:500;margin-bottom:0.5rem">Add Food to Your Reservation (Optional)</legend>
+            <div class="food-grid" style="display:grid;gap:0.75rem;max-height:200px;overflow-y:auto;padding:0.5rem;border:1px solid #eee;border-radius:6px;background:var(--bg);">
+              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+                <input type="checkbox" name="res-foods" value="Tuwo Shinkafa (₦2500)" data-price="2500">
+                <span>Tuwo Shinkafa ₦2,500</span>
+              </label>
+              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+                <input type="checkbox" name="res-foods" value="Suya (₦3000)" data-price="3000">
+                <span>Suya ₦3,000</span>
+              </label>
+              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+                <input type="checkbox" name="res-foods" value="Ofe Nsala (₦2800)" data-price="2800">
+                <span>Ofe Nsala ₦2,800</span>
+              </label>
+              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+                <input type="checkbox" name="res-foods" value="Abacha & Ugba (₦2200)" data-price="2200">
+                <span>Abacha ₦2,200</span>
+              </label>
+              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+                <input type="checkbox" name="res-foods" value="Efo Riro (₦2600)" data-price="2600">
+                <span>Efo Riro ₦2,600</span>
+              </label>
+              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+                <input type="checkbox" name="res-foods" value="Amala with Gbegiri (₦2900)" data-price="2900">
+                <span>Amala ₦2,900</span>
+              </label>
+            </div>
+            <small id="selectedFoodsCount" style="color:var(--muted);font-style:italic;"></small>
+          </fieldset>
+          
+          <div class="form-group">
+            <label for="message">Special Requests</label>
+            <textarea id="message" name="message" rows="3"></textarea>
+          </div>
+
+          <button type="submit" class="btn">Reserve Now</button>
+          <p id="formStatus"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Order Modal -->
+  <div id="orderModal" class="order-modal hidden">
+    <div class="order-container">
+      <div class="order-card">
+        <h2>Order <span id="orderDish"></span></h2>
+        <p>Unit Price: <span id="orderPrice"></span></p>
+        
+        <form id="orderForm">
+          <div class="form-group">
+            <label for="orderName">Full Name</label>
+            <input type="text" id="orderName" required>
+          </div>
+          <div class="form-group">
+            <label for="orderPhone">Phone</label>
+            <input type="tel" id="orderPhone" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="orderQuantity">Quantity</label>
+              <input type="number" id="orderQuantity" min="1" value="1" onchange="updateOrderTotal()" required>
+            </div>
+            <div class="form-group">
+              <label for="orderTotal">Total</label>
+              <input type="number" id="orderTotal" readonly>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="orderAddress">Delivery Address</label>
+            <input type="text" id="orderAddress" placeholder="e.g. 123 Lagos Street" required>
+          </div>
+          <button type="submit" class="btn">Place Order</button>
+        </form>
+        <p id="orderStatus"></p>
+        <button type="button" class="order-close" onclick="closeOrderModal()" aria-label="Close">×</button>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Nigeria Flavors — Celebrating Hausa, Igbo, Yoruba cuisine</p>
+    </div>
+  </footer>
+
+
+<script src="script.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
