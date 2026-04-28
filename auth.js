@@ -1,5 +1,8 @@
 // ========== AUTHENTICATION LOGIC ==========
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api`;
+//
+// FIXED 405 ERROR: Hardcoded localhost:5000 API_URL for development.
+// GitHub Pages can't handle POST APIs. Use http://localhost:5000 for all pages.
+const API_URL = 'http://localhost:5000/api';
 
 // Check if user is already logged in
 async function checkLoginStatus() {
