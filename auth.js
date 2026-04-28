@@ -1,6 +1,11 @@
 // ========== AUTHENTICATION LOGIC ==========
 
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api`;
+const API_URL = (() => {
+  if (window.location.hostname === 'localhost') return 'http://localhost:5000/api';
+  if (window.location.hostname.includes('github.io')) {
+    console.warn('GitHub Pages detected - run `cd server && npm start` locally!');
+    return null;
+  }
 
 // Check if user is already logged in
 function checkAuth() {
