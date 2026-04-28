@@ -1,5 +1,4 @@
 // ========== AUTHENTICATION LOGIC ==========
-
 const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : `${window.location.protocol}//${window.location.hostname}:${window.location.port}/api`;
 
 // Check if user is already logged in
@@ -9,39 +8,31 @@ async function checkLoginStatus() {
   
   if (token && user) {
     try {
-      const response = await fetch(`${API_URL}/user`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      if (response.ok) {
-        const currentUser = await response.json();
-        localStorage.setItem('user', JSON.stringify(currentUser));
-        // Redirect based on current page if needed
-        if (window.location.pathname.includes('login') || window.location.pathname.includes('register')) {
-          window.location.href = 'profile.html';
-        }
-      } else {
-        logout();
+      // Note: Server has no /api/user endpoint, so skip token validation for now
+      // Just trust localStorage (common for simple apps)
+      const currentUser = JSON.parse(user);
+      if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
+        window.location.href = 'profile.html';
       }
+      return currentUser;
     } catch (error) {
       console.error('Auth check failed:', error);
       logout();
     }
-  } else if (window.location.pathname.includes('profile') || window.location.pathname.includes('reservations-board')) {
+  } else if (window.location.pathname.includes('profile.html') || window.location.pathname.includes('reservations-board.html')) {
     window.location.href = 'login.html';
   }
 }
 
-// Login function
-async function login(email, password) {
+// Login function - FIXED: uses username (matches server expectation)
+async function login(username, password) {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ username, password }) // FIXED: username, not email
     });
     
     if (response.ok) {
@@ -49,35 +40,43 @@ async function login(email, password) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       window.location.href = 'profile.html';
+      return data;
     } else {
       const error = await response.json();
-      throw new Error(error.message || 'Login failed');
+      throw new Error(error.error || 'Login failed');
     }
   } catch (error) {
-    alert('Login failed: ' + error.message);
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Server not running. Please start the server first.');
+    }
+    throw error;
   }
 }
 
-// Register function
-async function register(name, email, password) {
+// Register function - FIXED: matches server field names
+async function register(email, phone, username, password) {
   try {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ email, phone, username, password }) // FIXED: server expects phone, not firstName/surname
     });
     
     if (response.ok) {
-      alert('Registration successful! Please login.');
+      // Don't auto-login after register
       window.location.href = 'login.html';
+      return await response.json();
     } else {
       const error = await response.json();
-      throw new Error(error.message || 'Registration failed');
+      throw new Error(error.error || 'Registration failed');
     }
   } catch (error) {
-    alert('Registration failed: ' + error.message);
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Server not running. Please start the server first.');
+    }
+    throw error;
   }
 }
 
@@ -97,7 +96,7 @@ function getCurrentUser() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', checkLoginStatus);
 
-// Export for use in other scripts if needed
+// Export for use in other scripts
 window.auth = {
   login,
   register,
