@@ -42,6 +42,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint for frontend ping
+app.get('/ping', (req, res) => {
+  res.json({ status: 'ok', server: 'running on port 5000' });
+});
+
 // Serve login.html as root /
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'login.html'));
