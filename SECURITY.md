@@ -4,7 +4,7 @@
 
 **Vulnerability**: An iframe with both `allow-scripts` and `allow-same-origin` in its `sandbox` attribute can escape sandboxing.
 
-**Status**: No iframes exist in the codebase.
+**Status**: Fixed - Vulnerable iframe in index.html sandbox updated from "allow-scripts allow-same-origin" to "allow-same-origin".
 
 **Files Scanned**:
 - index.html
