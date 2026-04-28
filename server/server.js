@@ -232,14 +232,30 @@ app.post('/api/auth/register', (req, res) => {
 
 // Update login to return all fields + update loginDate
 app.post('/api/auth/login', (req, res) => {
+  console.log('=== LOGIN DEBUG ===');
+  console.log('req.body:', JSON.stringify(req.body, null, 2));
+  console.log('Username:', req.body.username);
+  console.log('Password:', req.body.password);
+  
   const { username, password } = req.body;
   if (!username || !password) {
+    console.log('ERROR: Missing credentials');
     return res.status(400).json({ error: 'Missing credentials' });
   }
 
   const users = readUsers();
-  const userIndex = users.findIndex(u => u.username === username && u.password === password);
+  console.log(`Loaded ${users.length} users`);
+  console.log('First few users:', users.slice(0, 2).map(u => ({username: u.username, password: '[HIDDEN]'})));
+  
+  const trimmedUsername = username.trim();
+  const trimmedPassword = password.trim();
+  console.log('Trimmed:', {username: trimmedUsername, password: '[HIDDEN]'});
+  
+  const userIndex = users.findIndex(u => u.username === trimmedUsername && u.password === trimmedPassword);
+  console.log('User index found:', userIndex);
+  
   if (userIndex === -1) {
+    console.log('No match found');
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
@@ -248,6 +264,7 @@ app.post('/api/auth/login', (req, res) => {
   writeUsers(users);
 
   const token = `fake-jwt-token-${users[userIndex].id}-${Date.now()}`;
+  console.log('LOGIN SUCCESS for user:', users[userIndex].username);
   res.json({ token, user: {
     id: users[userIndex].id,
     username: users[userIndex].username,
@@ -258,6 +275,8 @@ app.post('/api/auth/login', (req, res) => {
     loginDate: users[userIndex].loginDate,
     image: users[userIndex].image
   } });
+  
+  console.log('==================');
 });
 
 
