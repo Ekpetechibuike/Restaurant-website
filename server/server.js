@@ -1,11 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const cors = require("cors");
-app.use(cors({
-  origin: "https://restaurant-website-six-ivory.vercel.app",
-  credentials: true
-}));
+const cors = require('cors');
 const multer = require('multer');
 const uploadDir = path.join(__dirname, '..', 'assets', 'user-images');
 if (!fs.existsSync(uploadDir)) {
@@ -19,7 +15,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-
 const app = express();
 app.use('/assets/user-images', express.static(uploadDir));
 
@@ -27,7 +22,7 @@ app.use('/assets/user-images', express.static(uploadDir));
 const PORT = process.env.PORT || 5000;
 
 // Enable CORS for frontend requests
-app.use(cors());
+app.use(cors({ origin: "https://restaurant-website-six-ivory.vercel.app", credentials: true }));
 app.use(express.json());
 
 // Dev-friendly CSP - overrides node_modules strict policy
