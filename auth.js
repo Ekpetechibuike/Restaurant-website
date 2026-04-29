@@ -4,7 +4,7 @@
  * GitHub Pages = static preview only
  */
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://your-app.onrender.com/api/auth/login';
 
 // Check if user is already logged in
 async function checkLoginStatus() {
