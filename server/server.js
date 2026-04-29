@@ -25,17 +25,29 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({ origin: "https://restaurant-website-six-ivory.vercel.app", credentials: true }));
 app.use(express.json());
 
-// Dev-friendly CSP - overrides node_modules strict policy
+// Safe CSP - dev localhost only, prod strict + Vercel/Render
 app.use((req, res, next) => {
   res.removeHeader('Content-Security-Policy');
+  
   if (process.env.NODE_ENV !== 'production') {
+    // Dev: localhost only (no external domains)
     res.set('Content-Security-Policy', 
-      "default-src 'self' http://localhost:* 'unsafe-inline'; " +
-      "connect-src 'self' http://localhost:* ws://localhost:*; " +
-      "img-src 'self' data: http://localhost:* https: blob:; " +
+      "default-src 'self' http://localhost:3000 http://localhost:5000 'unsafe-inline'; " +
+      "connect-src 'self' http://localhost:3000 http://localhost:5000 ws://localhost:3000; " +
+      "img-src 'self' data: http://localhost:3000 https: blob:; " +
       "style-src 'self' 'unsafe-inline'; " +
-      "script-src 'self' 'unsafe-inline' http://localhost:*; " +
-      "font-src 'self' http://localhost:* data:;"
+      "script-src 'self' 'unsafe-inline' http://localhost:3000; " +
+      "font-src 'self' data:;"
+    );
+  } else {
+    // Production: Vercel + Render domains only
+    res.set('Content-Security-Policy', 
+      "default-src 'self' https://restaurant-website-six-ivory.vercel.app https://nigeria-flavors.onrender.com 'unsafe-inline'; " +
+      "connect-src 'self' https://restaurant-website-six-ivory.vercel.app https://nigeria-flavors.onrender.com; " +
+      "img-src 'self' data: https: blob:; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "script-src 'self' 'unsafe-inline'; " +
+      "font-src 'self' data:;"
     );
   }
   next();
