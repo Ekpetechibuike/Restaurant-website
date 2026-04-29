@@ -1,0 +1,14 @@
+[build]
+  publish = "."
+  command = "npm install"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server.js"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self' https://*.netlify.app https://*.vercel.app https://*.onrender.com 'unsafe-inline'; connect-src 'self' https:; img-src 'self' data: https: blob:; style-src 'self
