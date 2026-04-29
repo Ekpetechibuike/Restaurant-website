@@ -1,7 +1,11 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const cors = require('cors');
+const cors = require("cors");
+app.use(cors({
+  origin: "https://restaurant-website-six-ivory.vercel.app",
+  credentials: true
+}));
 const multer = require('multer');
 const uploadDir = path.join(__dirname, '..', 'assets', 'user-images');
 if (!fs.existsSync(uploadDir)) {
