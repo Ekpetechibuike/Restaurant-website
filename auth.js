@@ -2,10 +2,14 @@
 /**
  * 405 Error Fixed - Use http://localhost:5000/login.html
  * GitHub Pages = static preview only
+ * ERR_CONNECTION_REFUSED Fix: Auto-detects server down → popup guides setup
  */
 
-const API_URL = 'https://your-app.onrender.com/api/auth/login';
 
+if (['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname) || window.location.protocol === 'file:') {
+  API_URL = 'https://your-app.onrender.com/api/auth/login';
+  console.warn('Using PRODUCTION API URL:', API_URL);
+}
 // Check if user is already logged in
 async function checkLoginStatus() {
   const token = localStorage.getItem('token');
@@ -27,8 +31,26 @@ async function checkLoginStatus() {
   }
 }
 
-// Login
+// Login with server check + GitHub fallback
 async function login(username, password) {
+  // 🚨 Server health check FIRST
+  try {
+    const ping = await fetch(`${API_URL.replace('/api', '')}/ping`, { 
+      method: 'HEAD', 
+      cache: 'no-store',
+      mode: 'no-cors' 
+    });
+  } catch (pingError) {
+    // Server down → friendly popup guide
+    if (!localStorage.getItem('serverWarningShown')) {
+      alert('🚨 CONNECTION ERROR FIXED!\\n\\nServer not running. Start it now:\\n\\n1. Open VSCode Terminal (Ctrl+\\` )\\n2. cd server\\n3. npm start\\n4. Refresh this page\\n\\nDEMO CREDENTIALS when running:\\nchibuike / E0k5p9e5');
+      localStorage.setItem('serverWarningShown', 'true');
+      throw new Error('SERVER_DOWN');
+    }
+    throw new Error('Start server first: cd server && npm start');
+  }
+
+  // Real login
   try {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
@@ -42,21 +64,20 @@ async function login(username, password) {
       const data = await response.json();
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.removeItem('serverWarningShown');
       window.location.href = 'profile.html';
       return data;
     } else {
-      const error = await response.json();
-      throw new Error(error.error || 'Login failed');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Login failed');
     }
   } catch (error) {
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      throw new Error('Server not running. Run: cd server && npm start');
-    }
+    console.error('Login error:', error);
     throw error;
   }
 }
 
-// Register
+// Register - same server check
 async function register(email, phone, username, password) {
   try {
     const response = await fetch(`${API_URL}/auth/register`, {
@@ -71,12 +92,12 @@ async function register(email, phone, username, password) {
       window.location.href = 'login.html';
       return await response.json();
     } else {
-      const error = await response.json();
-      throw new Error(error.error || 'Registration failed');
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Registration failed');
     }
   } catch (error) {
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      throw new Error('Server not running. Run: cd server && npm start');
+    if (error.message.includes('SERVER_DOWN') || error.name === 'TypeError') {
+      throw new Error('Server not running. cd server && npm start');
     }
     throw error;
   }
@@ -86,6 +107,7 @@ async function register(email, phone, username, password) {
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('serverWarningShown');
   window.location.href = 'login.html';
 }
 
