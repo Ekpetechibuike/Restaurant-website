@@ -7,7 +7,7 @@
 
 
 if (['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname) || window.location.protocol === 'file:') {
-  API_URL = 'https://your-app.onrender.com/api/auth/login';
+  var API_URL = 'https://your-backend.onrender.com/api/auth/login';
   console.warn('Using PRODUCTION API URL:', API_URL);
 }
 // Check if user is already logged in
