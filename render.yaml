@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: nigeria-flavors
+    env: node
+    rootDir: /
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true
