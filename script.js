@@ -1,9 +1,16 @@
 /**
- * Restaurant Website - Production Ready
- * Auto-detects server or uses mock data 
- * Works on Netlify/Vercel/Render/static
+ * Restaurant Website - STATIC-ONLY VERSION
+ * Netlify/GitHub Pages 100% - NO server popup EVER
  */
 
-// API config + server detection
-let IS_SERVER_AVAILABLE = false;
-const MOCK_DELAY
+document.addEventListener('DOMContentLoaded', function() {
+  // NO SERVER CHECK - pure static
+  console.log('Nigeria Flavors - Static ready!');
+  
+  // Profile auto-login demo
+  const demoUser = {
+    id: 1,
+    username : 'chibuike',
+    name: 'Chibuike Okafor',
+    email: 'chibuike@nigeriaflavors.com'
+  }; 
