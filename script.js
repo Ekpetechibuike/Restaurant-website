@@ -39,9 +39,10 @@ function logout() {
   if (window.auth && typeof window.auth.logout === 'function') {
     window.auth.logout();
   } else {
-    // Fallback if auth.js not loaded
+    // Fallback if auth.js not loaded - clear ALL auth-related localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('registeredUsers');
     
     // Hide profile elements
     const profileNavInfo = document.getElementById('profileNavInfo');
@@ -52,8 +53,8 @@ function logout() {
     if (profileNavLink) profileNavLink.classList.add('hidden');
     if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
     
-    // Redirect to home
-    window.location.href = 'index.html';
+    // Use replace to prevent going back to logged-in state
+    window.location.replace('index.html');
   }
 }
 
