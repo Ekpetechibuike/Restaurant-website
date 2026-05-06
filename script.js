@@ -34,21 +34,27 @@ function updateProfileNav(user) {
   }
 }
 
+// Logout function - delegates to window.auth.logout() in auth.js for consistency
 function logout() {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('user');
-  
-  // Hide profile elements
-  const profileNavInfo = document.getElementById('profileNavInfo');
-  const profileNavLink = document.getElementById('profileNavLink');
-  const logoutNavBtn = document.getElementById('logoutNavBtn');
-  
-  if (profileNavInfo) profileNavInfo.classList.add('hidden');
-  if (profileNavLink) profileNavLink.classList.add('hidden');
-  if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
-  
-  // Redirect to home
-  window.location.href = 'index.html';
+  if (window.auth && typeof window.auth.logout === 'function') {
+    window.auth.logout();
+  } else {
+    // Fallback if auth.js not loaded
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    
+    // Hide profile elements
+    const profileNavInfo = document.getElementById('profileNavInfo');
+    const profileNavLink = document.getElementById('profileNavLink');
+    const logoutNavBtn = document.getElementById('logoutNavBtn');
+    
+    if (profileNavInfo) profileNavInfo.classList.add('hidden');
+    if (profileNavLink) profileNavLink.classList.add('hidden');
+    if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
+    
+    // Redirect to home
+    window.location.href = 'index.html';
+  }
 }
 
 // ========== MENU FILTER FUNCTIONALITY ==========
