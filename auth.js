@@ -11,12 +11,21 @@ window.auth = {
     return !!(token && user);
   },
 
-  // Login function
+// Login function
   login: async function(username, password) {
     try {
       // Fetch users from local JSON file
-      const response = await fetch('users.json');
-      const users = await response.json();
+      let users = [];
+      try {
+        const response = await fetch('users.json');
+        users = await response.json();
+      } catch (e) {
+        console.log('Could not load users.json, using localStorage only');
+      }
+      
+      // Also check registeredUsers in localStorage (for newly registered users)
+      const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      users = [...users, ...registeredUsers];
       
       // Find user by username
       const user = users.find(u => u.username === username && u.password === password);
@@ -45,12 +54,21 @@ window.auth = {
     }
   },
 
-  // Register function
+// Register function
   register: async function(email, phone, username, password) {
     try {
       // Fetch existing users
-      const response = await fetch('users.json');
-      const users = await response.json();
+      let users = [];
+      try {
+        const response = await fetch('users.json');
+        users = await response.json();
+      } catch (e) {
+        console.log('Could not load users.json, using localStorage only');
+      }
+      
+      // Also check registeredUsers in localStorage
+      const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      users = [...users, ...registeredUsers];
       
       // Check if username already exists
       if (users.some(u => u.username === username)) {
