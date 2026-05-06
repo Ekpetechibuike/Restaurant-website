@@ -118,10 +118,12 @@ window.auth = {
     }
   },
 
-  // Logout function
+// Logout function
   logout: function() {
+    // Clear ALL authentication-related localStorage items
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('registeredUsers');
     
     // Hide profile elements
     const profileNavInfo = document.getElementById('profileNavInfo');
@@ -132,8 +134,8 @@ window.auth = {
     if (profileNavLink) profileNavLink.classList.add('hidden');
     if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
     
-    // Redirect to home
-    window.location.href = 'index.html';
+    // Use replace to prevent going back to logged-in state
+    window.location.replace('index.html');
   }
 };
 
