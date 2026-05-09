@@ -46,7 +46,7 @@ function updateProfileNav(user) {
   }
 }
 
-// Logout function - clears auth and reloads page
+// Logout function - clears auth and redirects to login page
 function logout() {
   try {
     // Clear ALL auth-related localStorage
@@ -71,11 +71,11 @@ function logout() {
     const navToggle = document.getElementById('navToggle');
     if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
     
-    // Reload page to full logout state
-    window.location.href = 'index.html';
+    // Redirect to login page so user can login again
+    window.location.href = 'login.html';
   } catch (error) {
     console.error('Logout error:', error);
-    window.location.href = 'index.html';
+    window.location.href = 'login.html';
   }
 }
 
