@@ -1,10 +1,19 @@
-<!doctype html>
+<!Doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Create Account — Nigeria Flavors</title>
   <link rel="stylesheet" href="styles.css" />
+<script src="auth.js"></script>
+  <script>
+    // Early auth check - redirect to home if already authenticated
+    (function() {
+      if (isAuthenticated()) {
+        window.location.href = 'index.html';
+      }
+    })();
+  </script>
   <style>
     body {
       display: flex;
