@@ -218,20 +218,6 @@ function initOrderForm() {
   });
 }
 
-// ========== NAVIGATION TOGGLE ==========
-function initNavToggle() {
-  const navToggle = document.getElementById('navToggle');
-  const nav = document.getElementById('nav');
-  
-  if (navToggle && nav) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = nav.dataset.open === 'true';
-      nav.dataset.open = !isOpen;
-      navToggle.setAttribute('aria-expanded', !isOpen);
-    });
-  }
-}
-
 // ========== DOM READY ==========
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Nigeria Flavors - Static ready!');
@@ -241,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initMenuFilters();
   initReservationForm();
   initOrderForm();
-  initNavToggle();
   
   // Demo user auto-login (for development)
   const demoUser = {
