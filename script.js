@@ -6,8 +6,19 @@
 // ========== AUTH & PROFILE FUNCTIONS ==========
 function checkAuth() {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  if (user && user.id) {
+  const loginNavLink = document.getElementById('loginNavLink');
+  const profileNavLink = document.getElementById('profileNavLink');
+  const logoutNavBtn = document.getElementById('logoutNavBtn');
+  const profileNavInfo = document.getElementById('profileNavInfo');
+
+  if (user && user.id && localStorage.getItem('authToken')) {
     updateProfileNav(user);
+    if (loginNavLink) loginNavLink.classList.add('hidden');
+  } else {
+    if (profileNavInfo) profileNavInfo.classList.add('hidden');
+    if (profileNavLink) profileNavLink.classList.add('hidden');
+    if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
+    if (loginNavLink) loginNavLink.classList.remove('hidden');
   }
 }
 
@@ -15,12 +26,13 @@ function updateProfileNav(user) {
   const profileNavInfo = document.getElementById('profileNavInfo');
   const profileNavLink = document.getElementById('profileNavLink');
   const logoutNavBtn = document.getElementById('logoutNavBtn');
-  const profileNav = document.getElementById('nav');
+  const loginNavLink = document.getElementById('loginNavLink');
   
   if (profileNavInfo && profileNavLink && logoutNavBtn) {
     profileNavInfo.classList.remove('hidden');
     profileNavLink.classList.remove('hidden');
     logoutNavBtn.classList.remove('hidden');
+    if (loginNavLink) loginNavLink.classList.add('hidden');
     
     const profileUsername = document.getElementById('profileUsername');
     const profileAvatarNav = document.getElementById('profileAvatarNav');
@@ -218,6 +230,26 @@ function initOrderForm() {
   });
 }
 
+function initNavToggle() {
+  const navToggle = document.getElementById('navToggle');
+  const nav = document.getElementById('nav');
+  
+  if (!navToggle || !nav) return;
+
+  navToggle.addEventListener('click', () => {
+    const isOpen = nav.dataset.open === 'true';
+    nav.dataset.open = !isOpen;
+    navToggle.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  nav.addEventListener('click', (event) => {
+    if (event.target.tagName === 'A' || event.target.closest('.nav-logout')) {
+      nav.dataset.open = 'false';
+      navToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
 // ========== DOM READY ==========
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Nigeria Flavors - Static ready!');
@@ -227,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initMenuFilters();
   initReservationForm();
   initOrderForm();
+  initNavToggle();
   
   // Demo user auto-login (for development)
   const demoUser = {
