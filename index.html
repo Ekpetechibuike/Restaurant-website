@@ -10,18 +10,20 @@
   <header class="site-header">
     <div class="container">
 
-<a class="logo" href="#">Nigeria Flavors</a>
-<span id="profileNavInfo" class="profile-nav-info hidden" style="margin-left:auto; display:flex; align-items:center; gap:0.5rem;">
+<a class="logo" href="index.html">Nigeria Flavors</a>
+<button id="navToggle" class="nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+<span id="profileNavInfo" class="profile-nav-info hidden">
   <img id="profileAvatarNav" src="assets/images/default-avatar.jpg" alt="Profile" class="profile-avatar-nav-nav">
   <span id="profileUsername"></span>
 </span>
       <nav id="nav" class="nav" data-open="false">
-        <a href="#menu">Menu</a
-
+        <a href="index.html">Home</a>
+        <a href="#menu">Menu</a>
         <a href="#culture">Culture</a>
         <a href="#contact">Contact</a>
-        <a href="profile.html" id="profileNavLink" class="hidden">My Profile</a>
-        <button id="logoutNavBtn" class="nav-logout hidden" onclick="logout()">Logout</button>
+        <a href="login.html" id="loginNavLink">Login</a>
+        <a href="profile.html" id="profileNavLink" class="hidden">Profile</a>
+        <button id="logoutNavBtn" class="nav-logout hidden" type="button" onclick="logout()">Logout</button>
       </nav>
     </div>
 </header>
@@ -172,34 +174,34 @@
           
           <!-- Food Selection for Reservation -->
           <fieldset class="form-group">
-            <legend style="font-weight:500;margin-bottom:0.5rem">Add Food to Your Reservation (Optional)</legend>
-            <div class="food-grid" style="display:grid;gap:0.75rem;max-height:200px;overflow-y:auto;padding:0.5rem;border:1px solid #eee;border-radius:6px;background:var(--bg);">
-              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+            <legend>Add Food to Your Reservation (Optional)</legend>
+            <div class="food-grid">
+              <label class="food-checkbox">
                 <input type="checkbox" name="res-foods" value="Tuwo Shinkafa (₦2500)" data-price="2500">
                 <span>Tuwo Shinkafa ₦2,500</span>
               </label>
-              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+              <label class="food-checkbox">
                 <input type="checkbox" name="res-foods" value="Suya (₦3000)" data-price="3000">
                 <span>Suya ₦3,000</span>
               </label>
-              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+              <label class="food-checkbox">
                 <input type="checkbox" name="res-foods" value="Ofe Nsala (₦2800)" data-price="2800">
                 <span>Ofe Nsala ₦2,800</span>
               </label>
-              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+              <label class="food-checkbox">
                 <input type="checkbox" name="res-foods" value="Abacha & Ugba (₦2200)" data-price="2200">
                 <span>Abacha ₦2,200</span>
               </label>
-              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+              <label class="food-checkbox">
                 <input type="checkbox" name="res-foods" value="Efo Riro (₦2600)" data-price="2600">
                 <span>Efo Riro ₦2,600</span>
               </label>
-              <label class="food-checkbox" style="display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;cursor:pointer">
+              <label class="food-checkbox">
                 <input type="checkbox" name="res-foods" value="Amala with Gbegiri (₦2900)" data-price="2900">
                 <span>Amala ₦2,900</span>
               </label>
             </div>
-            <small id="selectedFoodsCount" style="color:var(--muted);font-style:italic;"></small>
+            <small id="selectedFoodsCount"></small>
           </fieldset>
           
           <div class="form-group">
