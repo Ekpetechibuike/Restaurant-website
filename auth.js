@@ -2,13 +2,69 @@
 // In a real application, this would involve API calls to a backend server
 // This mock module allows us to simulate login/logout without a server
 
+// ========== CENTRALIZED AUTHENTICATION FUNCTIONS ==========
+
+// Check if user is currently authenticated
+function isAuthenticated() {
+  const token = localStorage.getItem('authToken');
+  const user = localStorage.getItem('user');
+  return !!(token && user);
+}
+
+// Get the logged-in user object
+function getCurrentUser() {
+  const userStr = localStorage.getItem('user');
+  return userStr ? JSON.parse(userStr) : null;
+}
+
+// Redirect to login page if not authenticated
+// Use this on protected pages (index.html, profile.html, etc.)
+function requireAuth() {
+  if (!isAuthenticated()) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  return true;
+}
+
+// Redirect to home page if already authenticated  
+// Use this on login.html and register.html
+function checkGuest() {
+  if (isAuthenticated()) {
+    window.location.href = 'index.html';
+    return false;
+  }
+  return true;
+}
+
+// Unified auth initialization for all pages
+// Call this on DOMContentLoaded in each page
+function handleAuthRedirects() {
+  const path = window.location.pathname;
+  const page = path.split('/').pop() || 'index.html';
+  
+  // Pages that require authentication
+  const protectedPages = ['index.html', 'profile.html', 'reservations-board.html'];
+  
+  // Pages only for guests (not logged in)
+  const guestPages = ['login.html', 'register.html'];
+  
+  if (protectedPages.includes(page)) {
+    // Redirect to login if not authenticated
+    requireAuth();
+  } else if (guestPages.includes(page)) {
+    // Redirect to home if already authenticated
+    checkGuest();
+  }
+}
+
+// ========== window.auth OBJECT ==========
+
 // Define window.auth object with all required methods
 window.auth = {
   // Check if user is authenticated
   isAuthenticated: function() {
-    const token = localStorage.getItem('authToken');
-    const user = localStorage.getItem('user');
-    return !!(token && user);
+    return isAuthenticated();
   },
 
 // Login function
@@ -143,11 +199,11 @@ window.auth = {
       const navToggle = document.getElementById('navToggle');
       if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
       
-      // Reload page
-      window.location.href = 'index.html';
+      // Redirect to login page so user can login again
+      window.location.href = 'login.html';
     } catch (error) {
       console.error('Logout error:', error);
-      window.location.href = 'index.html';
+      window.location.href = 'login.html';
     }
   }
 };
