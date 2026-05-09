@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Reservations Board — Nigeria Flavors</title>
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    // Early auth check - redirect to login if not authenticated
+    (function() {
+      const token = localStorage.getItem('authToken');
+      const user = localStorage.getItem('user');
+      if (!token || !user) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
   <style>
     .reservations-container {
       padding: 2rem 0;
