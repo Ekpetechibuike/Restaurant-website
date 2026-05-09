@@ -120,22 +120,35 @@ window.auth = {
 
 // Logout function
   logout: function() {
-    // Clear ALL authentication-related localStorage items
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('registeredUsers');
-    
-    // Hide profile elements
-    const profileNavInfo = document.getElementById('profileNavInfo');
-    const profileNavLink = document.getElementById('profileNavLink');
-    const logoutNavBtn = document.getElementById('logoutNavBtn');
-    
-    if (profileNavInfo) profileNavInfo.classList.add('hidden');
-    if (profileNavLink) profileNavLink.classList.add('hidden');
-    if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
-    
-    // Use replace to prevent going back to logged-in state
-    window.location.replace('index.html');
+    try {
+      // Clear ALL auth-related localStorage
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('registeredUsers');
+      
+      // Reset nav UI
+      const loginNavLink = document.getElementById('loginNavLink');
+      const profileNavLink = document.getElementById('profileNavLink');
+      const logoutNavBtn = document.getElementById('logoutNavBtn');
+      const profileNavInfo = document.getElementById('profileNavInfo');
+      
+      if (profileNavInfo) profileNavInfo.classList.add('hidden');
+      if (profileNavLink) profileNavLink.classList.add('hidden');
+      if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
+      if (loginNavLink) loginNavLink.classList.remove('hidden');
+      
+      // Close nav menu
+      const nav = document.getElementById('nav');
+      if (nav) nav.dataset.open = 'false';
+      const navToggle = document.getElementById('navToggle');
+      if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+      
+      // Reload page
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error('Logout error:', error);
+      window.location.href = 'index.html';
+    }
   }
 };
 
