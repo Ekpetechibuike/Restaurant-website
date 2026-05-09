@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nigeria Flavors — Cultural Restaurant</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="auth.js"></script>
+  <script>
+    // Early auth check - redirect to login if not authenticated
+    (function() {
+      if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
 </head>
 <body>
   <header class="site-header">
