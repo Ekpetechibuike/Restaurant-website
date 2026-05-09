@@ -46,27 +46,36 @@ function updateProfileNav(user) {
   }
 }
 
-// Logout function - delegates to window.auth.logout() in auth.js for consistency
+// Logout function - clears auth and reloads page
 function logout() {
-  if (window.auth && typeof window.auth.logout === 'function') {
-    window.auth.logout();
-  } else {
-    // Fallback if auth.js not loaded - clear ALL auth-related localStorage
+  try {
+    // Clear ALL auth-related localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     localStorage.removeItem('registeredUsers');
     
-    // Hide profile elements
-    const profileNavInfo = document.getElementById('profileNavInfo');
+    // Reset nav UI
+    const loginNavLink = document.getElementById('loginNavLink');
     const profileNavLink = document.getElementById('profileNavLink');
     const logoutNavBtn = document.getElementById('logoutNavBtn');
+    const profileNavInfo = document.getElementById('profileNavInfo');
     
     if (profileNavInfo) profileNavInfo.classList.add('hidden');
     if (profileNavLink) profileNavLink.classList.add('hidden');
     if (logoutNavBtn) logoutNavBtn.classList.add('hidden');
+    if (loginNavLink) loginNavLink.classList.remove('hidden');
     
-    // Use replace to prevent going back to logged-in state
-    window.location.replace('index.html');
+    // Close nav menu
+    const nav = document.getElementById('nav');
+    if (nav) nav.dataset.open = 'false';
+    const navToggle = document.getElementById('navToggle');
+    if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+    
+    // Reload page to full logout state
+    window.location.href = 'index.html';
+  } catch (error) {
+    console.error('Logout error:', error);
+    window.location.href = 'index.html';
   }
 }
 
