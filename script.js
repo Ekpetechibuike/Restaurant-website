@@ -245,16 +245,27 @@ function initNavToggle() {
   
   if (!navToggle || !nav) return;
 
-  navToggle.addEventListener('click', () => {
-    const isOpen = nav.dataset.open === 'true';
-    nav.dataset.open = !isOpen;
-    navToggle.setAttribute('aria-expanded', String(!isOpen));
+  const setMenuState = (isOpen) => {
+    nav.dataset.open = isOpen ? 'true' : 'false';
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+    navToggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+  };
+
+  navToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setMenuState(nav.dataset.open !== 'true');
   });
 
   nav.addEventListener('click', (event) => {
-    if (event.target.tagName === 'A' || event.target.closest('.nav-logout')) {
-      nav.dataset.open = 'false';
-      navToggle.setAttribute('aria-expanded', 'false');
+    const clickedLink = event.target.closest('a, .nav-logout');
+    if (clickedLink) {
+      setMenuState(false);
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!nav.contains(event.target) && !navToggle.contains(event.target)) {
+      setMenuState(false);
     }
   });
 }
