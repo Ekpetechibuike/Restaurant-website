@@ -70,37 +70,34 @@ window.auth = {
 // Login function
   login: async function(username, password) {
     try {
-      // Fetch users from local JSON file
+      const normalizedInput = (username || '').toString().trim().toLowerCase();
       let users = [];
       try {
-        const response = await fetch('users.json');
-        users = await response.json();
+        const response = await fetch('users.json', { cache: 'no-store' });
+        if (response.ok) {
+          users = await response.json();
+        }
       } catch (e) {
         console.log('Could not load users.json, using localStorage only');
       }
       
-      // Also check registeredUsers in localStorage (for newly registered users)
       const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users = [...users, ...registeredUsers];
       
-      // Find user by username
-      const user = users.find(u => u.username === username && u.password === password);
+      const user = users.find(u => {
+        const storedUsername = (u.username || '').toString().trim().toLowerCase();
+        const storedEmail = (u.email || '').toString().trim().toLowerCase();
+        return (storedUsername === normalizedInput || storedEmail === normalizedInput) && String(u.password) === String(password);
+      });
       
       if (!user) {
         throw new Error('Invalid username or password');
       }
       
-      // Create auth token
       const token = 'auth-token-' + Date.now();
-      
-      // Save to localStorage
       localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(user));
-      
-      // Update profile navigation
       updateProfileNav(user);
-      
-      // Redirect to home
       window.location.href = 'index.html';
       
       return user;
@@ -113,58 +110,48 @@ window.auth = {
 // Register function
   register: async function(email, phone, username, password) {
     try {
-      // Fetch existing users
       let users = [];
       try {
-        const response = await fetch('users.json');
-        users = await response.json();
+        const response = await fetch('users.json', { cache: 'no-store' });
+        if (response.ok) {
+          users = await response.json();
+        }
       } catch (e) {
         console.log('Could not load users.json, using localStorage only');
       }
       
-      // Also check registeredUsers in localStorage
       const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       users = [...users, ...registeredUsers];
       
-      // Check if username already exists
-      if (users.some(u => u.username === username)) {
+      const normalizedUsername = (username || '').toString().trim().toLowerCase();
+      const normalizedEmail = (email || '').toString().trim().toLowerCase();
+      
+      if (users.some(u => (u.username || '').toString().trim().toLowerCase() === normalizedUsername)) {
         throw new Error('Username already exists');
       }
       
-      // Check if email already exists
-      if (users.some(u => u.email === email)) {
+      if (users.some(u => (u.email || '').toString().trim().toLowerCase() === normalizedEmail)) {
         throw new Error('Email already exists');
       }
       
-      // Create new user
       const newUser = {
         id: Date.now(),
-        email: email,
-        username: username,
+        email: email.trim(),
+        username: username.trim(),
         password: password,
-        phone: phone,
+        phone: phone.trim(),
         loginDate: new Date().toISOString(),
         image: 'assets/images/default-avatar.jpg'
       };
       
-      // Add to users array
-      users.push(newUser);
-      
-      // Note: In a static-only site, we can't write back to users.json
-      // For demo purposes, we'll save to localStorage instead
       const localUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
       localUsers.push(newUser);
       localStorage.setItem('registeredUsers', JSON.stringify(localUsers));
       
-      // Auto-login after registration
       const token = 'auth-token-' + Date.now();
       localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(newUser));
-      
-      // Update profile navigation
       updateProfileNav(newUser);
-      
-      // Redirect to home
       window.location.href = 'index.html';
       
       return newUser;
@@ -177,10 +164,9 @@ window.auth = {
 // Logout function
   logout: function() {
     try {
-      // Clear ALL auth-related localStorage
+      // Clear authentication state but keep registered accounts so users can sign in later
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      localStorage.removeItem('registeredUsers');
       
       // Reset nav UI
       const loginNavLink = document.getElementById('loginNavLink');
@@ -217,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Helper function for error messages (shared across pages)
+// Helper functions for feedback messages (shared across pages)
 function showError(message, container = document) {
   const errorDiv = container.getElementById('errorMessage');
   if (errorDiv) {
@@ -230,4 +216,14 @@ function showError(message, container = document) {
   setTimeout(() => {
     if (errorDiv) errorDiv.style.display = 'none';
   }, 5000);
+}
+
+function showSuccess(message, container = document) {
+  const successDiv = container.getElementById('successMessage');
+  if (successDiv) {
+    successDiv.textContent = message;
+    successDiv.style.display = 'block';
+  } else {
+    alert(message);
+  }
 }
