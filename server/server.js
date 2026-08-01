@@ -22,7 +22,7 @@ app.use('/assets/user-images', express.static(uploadDir));
 const PORT = process.env.PORT || 5000;
 
 // Enable CORS for frontend requests
-app.use(cors({ origin: "https://restaurant-website-six-ivory.vercel.app", credentials: true }));
+app.use(cors({ origin: "https://restaurant-website-trkn.onrender.com", credentials: true }));
 app.use(express.json());
 
 // Safe CSP - dev localhost only, prod strict + Vercel/Render
@@ -40,14 +40,14 @@ app.use((req, res, next) => {
       "font-src 'self' data:;"
     );
   } else {
-    // Production: Vercel + Render domains only
-    res.set('Content-Security-Policy', 
-      "default-src 'self' https://restaurant-website-six-ivory.vercel.app https://nigeria-flavors.onrender.com 'unsafe-inline'; " +
-      "connect-src 'self' https://restaurant-website-six-ivory.vercel.app https://nigeria-flavors.onrender.com; " +
-      "img-src 'self' data: https: blob:; " +
+    // Production: stricter policy, allow Vercel/Render assets if needed
+    res.set('Content-Security-Policy',
+      "default-src 'self'; " +
+      "connect-src 'self' https://restaurant-website-six-ivory.vercel.app; " +
+      "img-src 'self' data: https:; " +
       "style-src 'self' 'unsafe-inline'; " +
       "script-src 'self' 'unsafe-inline'; " +
-      "font-src 'self' data:;"
+      "font-src 'self' data:"
     );
   }
   next();
@@ -139,22 +139,25 @@ app.get('/api/reservations', (req, res) => {
 });
 
 app.post('/api/reservations', (req, res) => {
-  const {name, email, date, time, guests} = req.body || {};
-  if(!name || !email || !date || !time || !guests){
+  const {name, email, phone, date, time, guests} = req.body || {};
+  if(!name || !email || !phone || !date || !time || !guests){
     return res.status(400).json({error: 'Missing required fields.'});
   }
   
   const reservations = readReservations();
   
-  // Check if this email already has a reservation
-  const existingReservation = reservations.find(r => r.email === email);
+  const existingReservation = reservations.find(r => {
+    const sameEmail = r.email && email && r.email.toLowerCase() === email.toLowerCase();
+    const samePhone = r.phone && phone && r.phone === phone;
+    return sameEmail || samePhone;
+  });
   if(existingReservation){
-    return res.status(403).json({error: 'You have already booked a table.'});
+    return res.status(403).json({error: 'You have already reserved.'});
   }
   
   const newRes = {
     id: Date.now(),
-    name, email, date, time, guests, 
+    name, email, phone, date, time, guests, 
     message: req.body.message || '',
     foods: req.body.foods || [], // Array of selected dishes
     createdAt: new Date().toISOString()
