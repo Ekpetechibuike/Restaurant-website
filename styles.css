@@ -11,11 +11,12 @@ body{font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;margin:0;color:var(--
 .site-header{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:40}
 .site-header .container{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:space-between}
 .logo{font-weight:700;color:var(--accent);text-decoration:none;font-size:1.25rem}
-.nav{display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center}
+.nav{display:none;flex-direction:column;gap:0.5rem;align-items:stretch;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid #eee;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.08);z-index:50}
+.nav[data-open="true"]{display:flex}
 .nav a{color:var(--text);text-decoration:none;padding:.75rem 1rem;border-radius:10px;background:rgba(0,0,0,.03);}
 .nav button.nav-logout{padding:.75rem 1rem;border:none;border-radius:10px;background:#dc2626;color:#fff;cursor:pointer}
 .nav a:hover,.nav button.nav-logout:hover{background:rgba(211,84,0,.12)}
-.nav-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:1.25rem;cursor:pointer}
+.nav-toggle{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:1.25rem;cursor:pointer}
 .hero{padding:2rem 0;background:linear-gradient(180deg,rgba(211,84,0,.06),transparent)}
 .hero h1{margin:0;font-size:1.85rem;line-height:1.2}
 .hero p{max-width:100%;margin:0.75rem 0 1rem}
@@ -56,12 +57,12 @@ fieldset legend{font-weight:500;color:var(--text);margin-bottom:0.75rem;padding:
 .tribes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
 .site-footer{border-top:1px solid #eee;padding:.75rem 0;margin-top:1.25rem;text-align:center;color:var(--muted);background:#fff}
 .contact{padding:1.5rem 0}
+@media (min-width:801px){
+  .site-header .container{position:relative}
+  .nav{left:auto;right:1rem;width:min(260px, calc(100% - 2rem))}
+}
 @media (max-width:800px){
   .site-header .container{justify-content:space-between}
-  .nav-toggle{display:flex}
-  .nav{position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid #eee;flex-direction:column;gap:0;align-items:stretch;padding:1rem;display:none;box-shadow:0 10px 30px rgba(0,0,0,.08)}
-  .nav[data-open="true"]{display:flex}
-  .nav[data-open="false"]{display:none}
   .nav a{width:100%;margin-bottom:0.5rem}
   .nav button.nav-logout{width:100%;margin-bottom:0.5rem}
   .card img{height:auto}
