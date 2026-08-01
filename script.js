@@ -108,12 +108,20 @@ function initMenuFilters() {
 function initReservationForm() {
   const form = document.getElementById('reservationForm');
   if (!form) return;
+
+  const phoneInput = form.querySelector('#phone');
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  if (phoneInput && storedUser.phone && !phoneInput.value) {
+    phoneInput.value = storedUser.phone;
+  }
   
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const formData = new FormData(form);
     const statusEl = document.getElementById('formStatus');
+    const email = (formData.get('email') || '').toString().trim().toLowerCase();
+    const phone = (formData.get('phone') || '').toString().trim();
     
     // Get selected foods
     const selectedFoods = [];
@@ -124,11 +132,27 @@ function initReservationForm() {
         price: parseInt(cb.dataset.price)
       });
     });
+
+    const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+    const existingReservation = reservations.find((reservation) => {
+      const sameEmail = reservation.email && reservation.email.toLowerCase() === email;
+      const samePhone = reservation.phone && reservation.phone === phone;
+      return sameEmail || samePhone;
+    });
+
+    if (existingReservation) {
+      if (statusEl) {
+        statusEl.textContent = 'You have already reserved.';
+        statusEl.style.color = '#dc2626';
+      }
+      return;
+    }
     
     const reservation = {
       id: Date.now(),
       name: formData.get('name'),
-      email: formData.get('email'),
+      email,
+      phone,
       date: formData.get('date'),
       time: formData.get('time'),
       guests: parseInt(formData.get('guests')),
@@ -137,25 +161,48 @@ function initReservationForm() {
       total: selectedFoods.reduce((sum, f) => sum + f.price, 0),
       createdAt: new Date().toISOString()
     };
-    
-    // Save to localStorage
-    const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
-    reservations.push(reservation);
-    localStorage.setItem('reservations', JSON.stringify(reservations));
-    
-    // Save to local JSON file for static display
+
+    const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:5000/api'
+      : '/api';
+
     try {
+      const response = await fetch(`${apiBase}/reservations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reservation)
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Reservation failed');
+      }
+
+      reservations.push(reservation);
+      localStorage.setItem('reservations', JSON.stringify(reservations));
       localStorage.setItem('reservationPending', JSON.stringify(reservation));
-    } catch (err) {
-      console.log('LocalStorage save:', err);
-    }
-    
-    if (statusEl) {
-      statusEl.textContent = 'Reservation submitted successfully!';
-      statusEl.style.color = 'green';
+
+      if (statusEl) {
+        statusEl.textContent = 'Reservation submitted successfully!';
+        statusEl.style.color = 'green';
+      }
+    } catch (error) {
+      reservations.push(reservation);
+      localStorage.setItem('reservations', JSON.stringify(reservations));
+      localStorage.setItem('reservationPending', JSON.stringify(reservation));
+
+      if (statusEl) {
+        statusEl.textContent = error.message || 'You have already reserved.';
+        statusEl.style.color = '#dc2626';
+      }
+      return;
     }
     
     form.reset();
+    if (phoneInput && storedUser.phone) {
+      phoneInput.value = storedUser.phone;
+    }
     
     setTimeout(() => {
       if (statusEl) statusEl.textContent = '';
