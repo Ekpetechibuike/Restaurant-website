@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reservations Board — Nigeria Flavors</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script>
+    // Early auth check - redirect to login if not authenticated
+    (function() {
+      const token = localStorage.getItem('authToken');
+      const user = localStorage.getItem('user');
+      if (!token || !user) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+  <style>
+    .reservations-container {
+      padding: 2rem 0;
+      min-height: 100vh;
+    }
+    
+    .reservations-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .reservations-header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+    }
+    
+    .reservations-header p {
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    .reservations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    .reservation-card {
+      background: var(--card-bg);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .reservation-card h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 1.25rem;
+    }
+    
+    .reservation-details {
+      display: grid;
+      gap: 0.5rem;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .detail-label {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    
+    .detail-value {
+      color: var(--text);
+      font-weight: 600;
+    }
+    
+    .reservation-message {
+      background: #f3f4f6;
+      padding: 0.75rem;
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-style: italic;
+      border-left: 3px solid var(--accent);
+    }
+    
+    .reservation-time {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+    
+    .no-reservations {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--muted);
+    }
+    
+    .no-reservations h2 {
+      margin: 0 0 0.5rem 0;
+      color: var(--text);
+    }
+    
+    .refresh-info {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- No login modal - public board -->
+
+
+  <header class="site-header">
+    <div class="container">
+      <a class="logo" href="index.html">Nigeria Flavors</a>
+      <nav class="nav">
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="reservations-container">
+      <div class="container">
+        <div class="reservations-header">
+          <h1>🎉 Table Reservations</h1>
+          <p>Live updates of customer reservations at Nigeria Flavors</p>
+        </div>
+
+        <div id="reservationsBoard" class="reservations-grid">
+          <!-- Reservations will be loaded here -->
+        </div>
+
+        <div class="refresh-info">
+          Auto-refreshing every 3 seconds • Last updated: <span id="lastUpdate">just now</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Nigeria Flavors — Cultural Restaurant. All rights reserved.</p>
+  </footer>
+
+<script src="reservations-board.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
