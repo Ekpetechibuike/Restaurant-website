@@ -16,6 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const app = express();
+app.set('trust proxy', true);
 app.use('/assets/user-images', express.static(uploadDir));
 
 
@@ -110,6 +111,14 @@ function writeOrders(arr){
   fs.writeFileSync(ORDERS_FILE, JSON.stringify(arr, null, 2), 'utf8');
 }
 
+function getClientIp(req) {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (typeof forwarded === 'string' && forwarded.trim()) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.ip || req.connection?.remoteAddress || 'unknown';
+}
+
 
 // Auth middleware
 function authMiddleware(req, res, next) {
@@ -145,11 +154,13 @@ app.post('/api/reservations', (req, res) => {
   }
   
   const reservations = readReservations();
+  const ipAddress = getClientIp(req);
   
   const existingReservation = reservations.find(r => {
+    const sameIp = r.ipAddress && ipAddress && r.ipAddress === ipAddress;
     const sameEmail = r.email && email && r.email.toLowerCase() === email.toLowerCase();
     const samePhone = r.phone && phone && r.phone === phone;
-    return sameEmail || samePhone;
+    return sameIp || sameEmail || samePhone;
   });
   if(existingReservation){
     return res.status(403).json({error: 'You have already reserved.'});
@@ -160,6 +171,7 @@ app.post('/api/reservations', (req, res) => {
     name, email, phone, date, time, guests, 
     message: req.body.message || '',
     foods: req.body.foods || [], // Array of selected dishes
+    ipAddress,
     createdAt: new Date().toISOString()
   };
 
