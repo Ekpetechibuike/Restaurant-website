@@ -286,6 +286,80 @@ function initOrderForm() {
   });
 }
 
+function initReservationBoard() {
+  const board = document.getElementById('reservationsBoard');
+  if (!board) return;
+
+  const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+  const reservationsRows = document.getElementById('reservationsBoardRows');
+  const totalReservations = document.getElementById('totalReservations');
+  const reservationsEmpty = document.getElementById('reservationsBoardEmpty');
+  const ordersRows = document.getElementById('ordersBoardRows');
+  const totalOrders = document.getElementById('totalOrders');
+  const ordersEmpty = document.getElementById('ordersBoardEmpty');
+
+  if (totalReservations) {
+    totalReservations.textContent = String(reservations.length);
+  }
+  if (totalOrders) {
+    totalOrders.textContent = String(orders.length);
+  }
+
+  if (reservationsRows) {
+    reservationsRows.innerHTML = '';
+    if (reservations.length === 0) {
+      reservationsEmpty && reservationsEmpty.classList.remove('hidden');
+    } else {
+      reservationsEmpty && reservationsEmpty.classList.add('hidden');
+      const sortedReservations = [...reservations].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      sortedReservations.forEach((reservation) => {
+        const row = document.createElement('tr');
+        const foods = Array.isArray(reservation.foods) && reservation.foods.length > 0
+          ? reservation.foods.map(food => food.name).join(', ')
+          : 'None';
+        const createdAt = reservation.createdAt ? new Date(reservation.createdAt).toLocaleString() : '-';
+
+        row.innerHTML = `
+          <td>${reservation.name || '-'}</td>
+          <td>${reservation.phone || '-'}</td>
+          <td>${reservation.date || '-'} ${reservation.time || ''}</td>
+          <td>${reservation.guests || '-'}</td>
+          <td>${foods}</td>
+          <td>${reservation.total ? '₦' + reservation.total.toLocaleString() : '₦0'}</td>
+          <td>${reservation.message || '-'}</td>
+        `;
+        reservationsRows.appendChild(row);
+      });
+    }
+  }
+
+  if (ordersRows) {
+    ordersRows.innerHTML = '';
+    if (orders.length === 0) {
+      ordersEmpty && ordersEmpty.classList.remove('hidden');
+    } else {
+      ordersEmpty && ordersEmpty.classList.add('hidden');
+      const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      sortedOrders.forEach((order) => {
+        const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : '-';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${order.name || '-'}</td>
+          <td>${order.phone || '-'}</td>
+          <td>${order.dish || '-'}</td>
+          <td>${order.quantity || '-'}</td>
+          <td>${order.address || '-'}</td>
+          <td>${order.total ? '₦' + order.total.toLocaleString() : '₦0'}</td>
+          <td>${orderDate}</td>
+        `;
+        ordersRows.appendChild(row);
+      });
+    }
+  }
+}
+
 function initNavToggle() {
   const navToggle = document.getElementById('navToggle');
   const nav = document.getElementById('nav');
@@ -326,6 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initMenuFilters();
   initReservationForm();
   initOrderForm();
+  initReservationBoard();
   initNavToggle();
   
   // Demo user auto-login (for development)
