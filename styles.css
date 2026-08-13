@@ -11,7 +11,8 @@ body{font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;margin:0;color:var(--
 .container{max-width:1200px;margin:0 auto;padding:1rem}
 .site-header{background:rgba(255,255,255,.94);border-bottom:1px solid #f0e3d8;position:sticky;top:0;z-index:40;backdrop-filter:blur(10px)}
 .site-header .container{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;justify-content:space-between}
-.logo{font-weight:700;color:var(--accent);text-decoration:none;font-size:1.25rem;letter-spacing:.02em}
+.logo{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;line-height:0}
+.logo img{display:block;height:72px;width:auto;max-width:220px;object-fit:contain}
 .nav{display:none;flex-direction:column;gap:0.5rem;align-items:stretch;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid #eee;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.08);z-index:50}
 .nav[data-open="true"]{display:flex}
 .nav a{color:var(--text);text-decoration:none;padding:.75rem 1rem;border-radius:10px;background:rgba(0,0,0,.03);}
