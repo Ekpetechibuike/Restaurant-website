@@ -213,6 +213,75 @@ function initReservationForm() {
 // ========== ORDER MODAL FUNCTIONS ==========
 let currentDish = '';
 let currentPrice = 0;
+let orderItems = [];
+
+const menuFoods = [
+  { name: 'Tuwo Shinkafa', price: 2500 },
+  { name: 'Suya', price: 3000 },
+  { name: 'Ofe Nsala (White Soup)', price: 2800 },
+  { name: 'Abacha & Ugba', price: 2200 },
+  { name: 'Efo Riro', price: 2600 },
+  { name: 'Amala with Gbegiri & Ewedu', price: 2900 }
+];
+
+function renderOrderItems() {
+  const itemsEl = document.getElementById('orderItems');
+  if (!itemsEl) return;
+
+  itemsEl.innerHTML = '';
+  orderItems.forEach((item, index) => {
+    const row = document.createElement('div');
+    row.className = 'order-item-row';
+
+    const select = document.createElement('select');
+    select.setAttribute('aria-label', `Food item ${index + 1}`);
+    menuFoods.forEach((food) => {
+      const option = document.createElement('option');
+      option.value = food.name;
+      option.textContent = `${food.name} - ₦${food.price.toLocaleString()}`;
+      option.selected = food.name === item.name;
+      select.appendChild(option);
+    });
+    select.addEventListener('change', () => {
+      const food = menuFoods.find((menuItem) => menuItem.name === select.value);
+      item.name = food.name;
+      item.price = food.price;
+      updateOrderTotal();
+      renderOrderItems();
+    });
+
+    const quantity = document.createElement('input');
+    quantity.type = 'number';
+    quantity.min = '1';
+    quantity.value = String(item.quantity);
+    quantity.setAttribute('aria-label', `Quantity for ${item.name}`);
+    quantity.addEventListener('input', () => {
+      item.quantity = Math.max(1, parseInt(quantity.value, 10) || 1);
+      updateOrderTotal();
+    });
+
+    row.append(select, quantity);
+    if (orderItems.length > 1) {
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'order-remove-item';
+      remove.textContent = 'Remove';
+      remove.addEventListener('click', () => {
+        orderItems.splice(index, 1);
+        renderOrderItems();
+        updateOrderTotal();
+      });
+      row.appendChild(remove);
+    }
+    itemsEl.appendChild(row);
+  });
+}
+
+function addOrderItem() {
+  orderItems.push({ ...menuFoods[0], quantity: 1 });
+  renderOrderItems();
+  updateOrderTotal();
+}
 
 function openOrderModal(dish, price) {
   const modal = document.getElementById('orderModal');
@@ -220,14 +289,9 @@ function openOrderModal(dish, price) {
   
   currentDish = dish;
   currentPrice = price;
-  
-  const dishEl = document.getElementById('orderDish');
-  const priceEl = document.getElementById('orderPrice');
-  const totalEl = document.getElementById('orderTotal');
-  
-  if (dishEl) dishEl.textContent = dish;
-  if (priceEl) priceEl.textContent = '₦' + price.toLocaleString();
-  if (totalEl) totalEl.value = price;
+  orderItems = [{ name: dish, price, quantity: 1 }];
+  renderOrderItems();
+  updateOrderTotal();
   
   modal.classList.remove('hidden');
 }
@@ -238,12 +302,9 @@ function closeOrderModal() {
 }
 
 function updateOrderTotal() {
-  const quantityEl = document.getElementById('orderQuantity');
   const totalEl = document.getElementById('orderTotal');
-  
-  if (quantityEl && totalEl) {
-    const quantity = parseInt(quantityEl.value) || 1;
-    totalEl.value = quantity * currentPrice;
+  if (totalEl) {
+    totalEl.value = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 }
 
@@ -256,13 +317,15 @@ function initOrderForm() {
     
     const formData = new FormData(form);
     const statusEl = document.getElementById('orderStatus');
+    const foods = orderItems.map((item) => ({ ...item }));
     
     const order = {
       id: Date.now(),
       name: formData.get('orderName'),
       phone: formData.get('orderPhone'),
-      dish: currentDish,
-      quantity: parseInt(formData.get('orderQuantity')),
+      dish: foods.map((item) => item.name).join(', '),
+      quantity: foods.reduce((sum, item) => sum + item.quantity, 0),
+      foods,
       address: formData.get('orderAddress'),
       total: parseInt(formData.get('orderTotal')),
       createdAt: new Date().toISOString()
@@ -345,11 +408,17 @@ function initReservationBoard() {
       sortedOrders.forEach((order) => {
         const orderDate = order.createdAt ? new Date(order.createdAt).toLocaleString() : '-';
         const row = document.createElement('tr');
+        const foods = Array.isArray(order.foods) && order.foods.length > 0
+          ? order.foods.map((food) => food.name).join(', ')
+          : order.dish || '-';
+        const quantities = Array.isArray(order.foods) && order.foods.length > 0
+          ? order.foods.map((food) => food.quantity).join(', ')
+          : order.quantity || '-';
         row.innerHTML = `
           <td>${order.name || '-'}</td>
           <td>${order.phone || '-'}</td>
-          <td>${order.dish || '-'}</td>
-          <td>${order.quantity || '-'}</td>
+          <td>${foods}</td>
+          <td>${quantities}</td>
           <td>${order.address || '-'}</td>
           <td>${order.total ? '₦' + order.total.toLocaleString() : '₦0'}</td>
           <td>${orderDate}</td>
