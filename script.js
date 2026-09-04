@@ -220,6 +220,13 @@ const menuFoods = [
   { name: 'Suya', price: 3000 },
   { name: 'Ofe Nsala (White Soup)', price: 2800 },
   { name: 'Abacha & Ugba', price: 2200 },
+  { name: 'Jollof Rice & Plantain', price: 2800 },
+  { name: 'Okro Soup with Fufu', price: 2800 },
+  { name: 'Egusi Soup with Fufu', price: 2800 },
+  { name: 'Rice & Stew', price: 2800 },
+  { name: 'Nkwobi', price: 2200 },
+  { name: 'Ukwa', price: 2200 },
+  { name: 'Okpa', price: 2200 },
   { name: 'Efo Riro', price: 2600 },
   { name: 'Amala with Gbegiri & Ewedu', price: 2900 }
 ];
