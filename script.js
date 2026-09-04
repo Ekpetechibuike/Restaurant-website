@@ -227,6 +227,7 @@ const menuFoods = [
   { name: 'Nkwobi', price: 2200 },
   { name: 'Ukwa', price: 2200 },
   { name: 'Okpa', price: 2200 },
+  { name: 'Ofe Onugbu (Bitter Leaf Soup)', price: 2800 },
   { name: 'Efo Riro', price: 2600 },
   { name: 'Amala with Gbegiri & Ewedu', price: 2900 }
 ];
